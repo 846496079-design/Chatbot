@@ -8,7 +8,7 @@ KIMI_API_BASE = os.getenv("KIMI_API_BASE", "https://api.moonshot.cn/v1")
 KIMI_MODEL = os.getenv("KIMI_MODEL", "moonshot-v1-8k")
 
 SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
-SERVER_PORT = int(os.getenv("SERVER_PORT", "8001"))
+SERVER_PORT = int(os.getenv("PORT", os.getenv("SERVER_PORT", "8001")))
 
 MAX_CONTEXT_ROUNDS = 10
 MAX_FALLBACK_ROUNDS = 3
