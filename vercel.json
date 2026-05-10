@@ -1,29 +1,15 @@
 {
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
+  "experimentalServices": {
+    "frontend": {
+      "frontend": "frontend",
+      "entrypoint": "/",
+      "routePrefix": "/",
+      "framework": "create-react-app"
     },
-    {
-      "src": "backend/app.py",
-      "use": "@vercel/python"
+    "backend": {
+      "backend": "backend",
+      "entrypoint": "/api",
+      "routePrefix": "/api"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/backend/app.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
-    }
-  ],
-  "env": {
-    "SERVER_HOST": "0.0.0.0",
-    "SERVER_PORT": "3000"
   }
 }
