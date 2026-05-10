@@ -1,0 +1,41 @@
+# 依赖目录
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 构建产物
+build/
+dist/
+*.egg-info/
+.tox/
+.coverage
+htmlcov/
+.pytest_cache/
+.idea/
+.vscode/
+
+# 日志和临时文件
+*.log
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# 后端配置
+backend/.env
+backend/.env.*
+backend/logs/
+
+# 前端配置
+frontend/.env
+frontend/.env.*
+frontend/build/
