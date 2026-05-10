@@ -1,13 +1,11 @@
 {
-  "experimentalServices": {
-    "frontend": {
-      "entrypoint": "/",
-      "routePrefix": "/",
-      "framework": "create-react-app"
-    },
-    "backend": {
-      "entrypoint": "/backend/app.py",
-      "routePrefix": "/api"
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/build",
+  "installCommand": "cd frontend && npm install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  }
+  ]
 }
