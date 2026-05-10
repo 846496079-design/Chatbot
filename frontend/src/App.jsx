@@ -4,7 +4,7 @@ import ChatWindow from './components/ChatWindow';
 import DataPanel from './components/DataPanel';
 import WelcomeGuide from './components/WelcomeGuide';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:8001';
+const API_BASE = process.env.REACT_APP_API_BASE || 'https://chatbot-0x0v.onrender.com';
 
 function App() {
   const [sessionId, setSessionId] = useState(null);
