@@ -16,7 +16,7 @@ function WelcomeGuide({ onAction }) {
       title: '售前导购',
       desc: '想买什么？我帮您挑',
       icon: '🛍',
-      actions: ['推荐一款手机', '2000以内的耳机', '有什么优惠活动', '这款有货吗'],
+      actions: ['推荐一款手机', '2000以内的耳机', '有什么优惠活动'],
     },
     {
       id: 'order_query',

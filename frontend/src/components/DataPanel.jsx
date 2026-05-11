@@ -124,7 +124,6 @@ function DataPanel({ data }) {
             <span>情绪状态</span>
           </div>
           <div className="emotion-info">
-            <span className="emotion-score">5/10</span>
             <span className={`emotion-label ${emotion_status?.label || 'neutral'}`}>
               {EMOTION_LABELS[emotion_status?.label] || '中性'}
             </span>
