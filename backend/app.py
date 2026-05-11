@@ -340,7 +340,7 @@ async def send_message_stream(request: ChatRequest, req: Request):
                 import asyncio
                 await asyncio.sleep(0.02)
 
-            # 在 done 消息中带上卡片数据
+            # 在 done 消息中带上卡片数据和 pending_action
             done_payload = {
                 'type': 'done',
                 'content': '',
@@ -354,6 +354,9 @@ async def send_message_stream(request: ChatRequest, req: Request):
             if cards and card_type:
                 done_payload['cards'] = cards
                 done_payload['card_type'] = card_type
+            pending_action = result.get('pending_action')
+            if pending_action:
+                done_payload['pending_action'] = pending_action
 
             yield f"data: {json.dumps(done_payload)}\n\n"
 

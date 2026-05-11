@@ -29,6 +29,7 @@ class SessionStore:
             "quick_actions": [],
             "recommended_products": [],
             "user_interested_in_product": False,
+            "pending_action": None,
         }
         self._sessions[session_id] = session
         return session

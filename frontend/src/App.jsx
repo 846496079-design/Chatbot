@@ -3,6 +3,7 @@ import axios from 'axios';
 import ChatWindow from './components/ChatWindow';
 import DataPanel from './components/DataPanel';
 import WelcomeGuide from './components/WelcomeGuide';
+import ConfirmDialog from './components/ConfirmDialog';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'https://chatbot-0x0v.onrender.com';
 
@@ -22,6 +23,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [showGuide, setShowGuide] = useState(true);
   const [sceneLabel, setSceneLabel] = useState('');
+  const [confirmDialog, setConfirmDialog] = useState(null);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -67,6 +69,21 @@ function App() {
       console.error('获取看板数据失败:', e);
     }
   }, []);
+
+  // 执行下单
+  const executeOrder = async (product) => {
+    const orderId = `ORD-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${Math.floor(Math.random()*9000+1000)}`;
+    const reply = `好的！已为您成功下单：${product.name}，金额${product.price}元，订单号${orderId}。预计3-5个工作日内发货，请注意查收物流信息哦~很高兴为您服务！`;
+    setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+    setQuickActions(['查看订单', '继续咨询', '其他问题']);
+  };
+
+  // 执行取消订单
+  const executeCancel = async (order) => {
+    const reply = `好的！已为您成功取消订单${order.order_id}，商品：${order.product_name}。退款金额${order.amount}元将在3-5个工作日内原路返回您的支付账户，请注意查收~很高兴为您服务！`;
+    setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+    setQuickActions(['查看退款进度', '继续咨询', '其他问题']);
+  };
 
   const sendMessage = async (text) => {
     if (!text.trim() || !sessionId || loading) return;
@@ -149,6 +166,43 @@ function App() {
                       };
                       return newMessages;
                     });
+                  }
+                  // 如果有 pending_action，显示确认弹窗
+                  if (data.pending_action) {
+                    const action = data.pending_action;
+                    if (action.type === 'order') {
+                      setConfirmDialog({
+                        title: '确认下单',
+                        message: `您确定要购买 ${action.product.name} 吗？金额：${action.product.price} 元`,
+                        confirmText: '确认下单',
+                        cancelText: '再考虑一下',
+                        onConfirm: async () => {
+                          // 执行下单
+                          await executeOrder(action.product);
+                          setConfirmDialog(null);
+                        },
+                        onCancel: () => {
+                          setConfirmDialog(null);
+                          sendMessage('再考虑一下');
+                        }
+                      });
+                    } else if (action.type === 'cancel') {
+                      setConfirmDialog({
+                        title: '确认取消订单',
+                        message: `您确定要取消订单 ${action.order.order_id} 吗？商品：${action.order.product_name}，退款金额：${action.order.amount} 元`,
+                        confirmText: '确认取消',
+                        cancelText: '再考虑一下',
+                        onConfirm: async () => {
+                          // 执行取消订单
+                          await executeCancel(action.order);
+                          setConfirmDialog(null);
+                        },
+                        onCancel: () => {
+                          setConfirmDialog(null);
+                          sendMessage('再考虑一下');
+                        }
+                      });
+                    }
                   }
                 } else if (data.type === 'error') {
                   if (assistantMsgId !== null) {
@@ -271,6 +325,18 @@ function App() {
           <DataPanel data={panelData} />
         </div>
       </div>
+
+      {/* 确认弹窗 */}
+      {confirmDialog && (
+        <ConfirmDialog
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          confirmText={confirmDialog.confirmText}
+          cancelText={confirmDialog.cancelText}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={confirmDialog.onCancel}
+        />
+      )}
     </div>
   );
 }

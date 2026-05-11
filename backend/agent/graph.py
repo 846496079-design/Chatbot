@@ -440,25 +440,26 @@ async def pre_sale_handler(state: AgentState) -> AgentState:
                 user_input = msg.content
                 break
     
-    order_keywords = ["下单", "买", "购买", "就要", "这个吧", "确定要", "好的，买", "行，买", "就它了", "现在就可以，怎么下单"]
+    order_keywords = ["下单", "买", "购买", "就要", "这个吧", "确定要", "好的，买", "行，买", "就它了", "现在就可以，怎么下单", "帮我下单", "我要下单"]
     is_ordering = any(kw in user_input for kw in order_keywords)
     
     if is_ordering and products_data:
-        # 假的下单反馈
+        # 先回复确认消息
         product_name = products_data[0]["name"]
         price = products_data[0]["price"]
-        import datetime
-        import random
-        order_id = f"ORD-{datetime.datetime.now().strftime('%Y%m%d')}-{random.randint(1000, 9999)}"
-        reply = f"好的！已为您成功下单：{product_name}，金额{price}元，订单号{order_id}。预计3-5个工作日内发货，请注意查收物流信息哦~很高兴为您服务！"
+        pending_action = {
+            "type": "order",
+            "product": products_data[0]
+        }
+        session_store.update_session(session_id, {"pending_action": pending_action})
+        reply = f"好的，我这就帮您操作😊 确认一下：您要购买{product_name}，金额{price}元，对吗？"
         session_store.add_message(session_id, "assistant", reply)
         return {
             **state,
             "messages": state["messages"] + [AIMessage(content=reply)],
-            "current_step": "下单成功",
-            "quick_actions": ["查看订单", "继续咨询", "其他问题"],
-            "cards": [{"order_id": order_id, "product_name": product_name, "price": price, "status": "下单成功"}],
-            "card_type": "order",
+            "current_step": "下单确认",
+            "quick_actions": ["确认下单", "再考虑一下"],
+            "pending_action": pending_action
         }
     
     business_data = json.dumps(products_data, ensure_ascii=False, indent=2)
@@ -671,21 +672,25 @@ async def after_sale_handler(state: AgentState) -> AgentState:
                 user_input = msg.content
                 break
     
-    cancel_keywords = ["退订", "取消订单", "不要了", "退款", "退货", "取消", "我要退"]
+    cancel_keywords = ["退订", "取消订单", "不要了", "退款", "退货", "取消", "我要退", "帮我退", "申请退款"]
     is_canceling = any(kw in user_input for kw in cancel_keywords) or (issue_type and "退" in issue_type)
     
     if is_canceling:
-        # 假的退订/退款反馈
+        # 先回复确认消息
         refund_amount = order["amount"]
-        reply = f"好的！已为您成功取消订单{order_id}，商品：{order['product_name']}。退款金额{refund_amount}元将在3-5个工作日内原路返回您的支付账户，请注意查收~很高兴为您服务！"
+        pending_action = {
+            "type": "cancel",
+            "order": order
+        }
+        session_store.update_session(session_id, {"pending_action": pending_action})
+        reply = f"好的，我这就帮您操作😊 确认一下：您要取消订单{order_id}，商品{order['product_name']}，退款金额{refund_amount}元，对吗？"
         session_store.add_message(session_id, "assistant", reply)
         return {
             **state,
             "messages": state["messages"] + [AIMessage(content=reply)],
-            "current_step": "退订成功",
-            "quick_actions": ["查看退款进度", "继续咨询", "其他问题"],
-            "cards": [{"order_id": order_id, "product_name": order["product_name"], "refund_amount": refund_amount, "status": "退订成功"}],
-            "card_type": "order",
+            "current_step": "退订确认",
+            "quick_actions": ["确认取消", "再考虑一下"],
+            "pending_action": pending_action
         }
 
     business_data = json.dumps({"order": order, "ticket": ticket}, ensure_ascii=False, indent=2)
