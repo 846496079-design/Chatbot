@@ -73,7 +73,7 @@ const PROFILE_FIELDS = [
 const CATEGORIES = ['基础画像', '消费特征', '服务交互', '兴趣生活', '行为特征'];
 
 function DataPanel({ data }) {
-  const { current_intent, emotion_status, token_consumption, user_profile, profile_confidence, flow_state } = data;
+  const { current_intent, emotion_status, token_consumption, user_profile, flow_state } = data;
 
   const formatValue = (key, value) => {
     if (value === null || value === undefined || value === '') return '-';
@@ -91,24 +91,9 @@ function DataPanel({ data }) {
     return '';
   };
 
-  const formatConfidence = (conf) => {
-    if (conf === null || conf === undefined) return null;
-    return Math.round(conf * 100);
-  };
-
-  const getConfidenceClass = (conf) => {
-    if (conf === null || conf === undefined) return '';
-    if (conf >= 0.8) return 'conf-high';
-    if (conf >= 0.5) return 'conf-mid';
-    return 'conf-low';
-  };
-
   const profile = user_profile || {};
-  const profConf = profile_confidence || {};
   const intentName = current_intent?.name || '等待中';
   const intentScene = INTENT_SCENES[intentName] || '未分类';
-  const businessSlots = flow_state?.filled_slots || {};
-  const businessConf = flow_state?.business_confidence || {};
 
   return (
     <div className="data-panel-content">
@@ -142,11 +127,6 @@ function DataPanel({ data }) {
             <span className={`emotion-label ${emotion_status?.label || 'neutral'}`}>
               {EMOTION_LABELS[emotion_status?.label] || '中性'}
             </span>
-            {emotion_status?.confidence > 0 && (
-              <span className={`confidence-badge ${getConfidenceClass(emotion_status.confidence)}`}>
-                {formatConfidence(emotion_status.confidence)}%
-              </span>
-            )}
           </div>
         </div>
       </div>
@@ -198,19 +178,10 @@ function DataPanel({ data }) {
                   const isRealtime = REALTIME_SLOTS.has(field.key);
                   const value = formatValue(field.key, profile[field.key]);
                   const tagClass = getTagClass(value);
-                  const conf = profConf[field.key];
-                  const confPct = formatConfidence(conf);
                   return (
                     <div key={field.key} className={`profile-item ${isRealtime ? 'realtime' : ''}`}>
                       <span className="item-label">{field.label}</span>
-                      <span className="item-value-wrap">
-                        <span className={`item-value ${tagClass}`}>{value}</span>
-                        {confPct !== null && (
-                          <span className={`confidence-badge ${getConfidenceClass(conf)}`}>
-                            {confPct}%
-                          </span>
-                        )}
-                      </span>
+                      <span className={`item-value ${tagClass}`}>{value}</span>
                     </div>
                   );
                 })}
@@ -219,37 +190,6 @@ function DataPanel({ data }) {
           );
         })}
       </div>
-
-      {/* 业务槽位 */}
-      {Object.keys(businessSlots).length > 0 && (
-        <div className="profile-section">
-          <div className="profile-header">
-            <span className="section-icon">&#9679;</span>
-            <span>业务槽位</span>
-            <span className="profile-count">{Object.keys(businessSlots).length}槽位</span>
-          </div>
-          <div className="category-grid">
-            {Object.entries(businessSlots).map(([key, value]) => {
-              const conf = businessConf[key];
-              const confPct = formatConfidence(conf);
-              const displayValue = Array.isArray(value) ? value.join('、') : String(value);
-              return (
-                <div key={key} className="profile-item realtime">
-                  <span className="item-label">{key}</span>
-                  <span className="item-value-wrap">
-                    <span className="item-value">{displayValue}</span>
-                    {confPct !== null && (
-                      <span className={`confidence-badge ${getConfidenceClass(conf)}`}>
-                        {confPct}%
-                      </span>
-                    )}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

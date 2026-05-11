@@ -13,11 +13,10 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [panelData, setPanelData] = useState({
     current_intent: { id: '', name: '', route: '', confidence: 0 },
-    emotion_status: { label: 'neutral', confidence: 0, history: [] },
+    emotion_status: { label: 'neutral', history: [] },
     token_consumption: { total_prompt_tokens: 0, total_completion_tokens: 0, total_tokens: 0, round_count: 0 },
     user_profile: {},
-    profile_confidence: {},
-    flow_state: { current_flow: '', current_step: '', filled_slots: {}, business_confidence: {}, snapshot_stack: [] },
+    flow_state: { current_flow: '', current_step: '', filled_slots: {}, snapshot_stack: [] },
   });
   const [quickActions, setQuickActions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -193,22 +192,15 @@ function App() {
         current_intent: ad.intent || prev.current_intent,
         emotion_status: {
           label: ad.emotion?.label || 'neutral',
-          confidence: ad.emotion?.confidence || 0,
           history: [...prev.emotion_status.history, { round: prev.token_consumption.round_count + 1, label: ad.emotion?.label || 'neutral' }].slice(-5),
         },
         token_consumption: ad.token_usage || prev.token_consumption,
         user_profile: ad.structured_data?.profile_updates 
           ? { ...prev.user_profile, ...ad.structured_data.profile_updates }
           : prev.user_profile,
-        profile_confidence: ad.structured_data?.profile_confidence
-          ? { ...prev.profile_confidence, ...ad.structured_data.profile_confidence }
-          : prev.profile_confidence,
         flow_state: {
           ...prev.flow_state,
           filled_slots: ad.structured_data?.business_slots || prev.flow_state.filled_slots,
-          business_confidence: ad.structured_data?.business_confidence
-            ? { ...prev.flow_state.business_confidence, ...ad.structured_data.business_confidence }
-            : prev.flow_state.business_confidence,
         },
       }));
     }
@@ -226,11 +218,10 @@ function App() {
     setMessages([]);
     setPanelData({
       current_intent: { id: '', name: '', route: '', confidence: 0 },
-      emotion_status: { label: 'neutral', confidence: 0, history: [] },
+      emotion_status: { label: 'neutral', history: [] },
       token_consumption: { total_prompt_tokens: 0, total_completion_tokens: 0, total_tokens: 0, round_count: 0 },
       user_profile: {},
-      profile_confidence: {},
-      flow_state: { current_flow: '', current_step: '', filled_slots: {}, business_confidence: {}, snapshot_stack: [] },
+      flow_state: { current_flow: '', current_step: '', filled_slots: {}, snapshot_stack: [] },
     });
     setQuickActions([]);
     setShowGuide(true);

@@ -19,7 +19,6 @@ class SessionStore:
             "current_flow": None,
             "current_step": None,
             "business_slots": {},
-            "business_confidence": {},
             "user_profile": dict(DEFAULT_USER_PROFILE),
             "profile_confidence": {},
             "token_usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},

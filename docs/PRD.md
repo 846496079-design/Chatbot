@@ -73,7 +73,7 @@
 
 | 编号 | 类型 | 描述 |
 |------|------|------|
-| NF-001 | 性能 | 快速通道首字延迟 ≤ 3秒（含LLM调用），分析端点 ≤ 5秒 |
+| NF-001 | 性能 | 快速通道首字延迟 ≤ 3秒（含LLM调用），分析端点 ≤ 10秒 |
 | NF-002 | 可用性 | API调用失败时提供本地兜底回复，不中断体验 |
 | NF-003 | 安全 | 用户手机号/地址等敏感信息脱敏展示 |
 | NF-004 | 合规 | 防提示词注入校验 |
@@ -273,9 +273,9 @@
     |       - SSE流式输出，用户即时看到文字
     |       - 完成后累加Token到会话
     |
-    +---> POST /api/chat/analyze        (分析端点，~2-3秒)
-            - 本地意图识别 + 本地情绪判断 + LLM槽位/画像抽取
-            - 使用超精简 ANALYZE_PROMPT（仅槽位+画像）
+    +---> POST /api/chat/analyze        (分析端点，~7秒)
+            - 意图识别 + 情绪判断 + 槽位抽取
+            - 使用精简版 ANALYZE_PROMPT
             - 更新会话状态（意图/情绪/槽位/画像）
             - 累加Token到会话
             - 结果异步更新到前端数据看板
@@ -1207,33 +1207,30 @@ order_id (必填，入口槽位)
 
 ### 5.1.1 精简分析Prompt（ANALYZE_PROMPT - 并行分析端点用）
 
-> 为降低分析端点延迟，经过多轮优化：v1.0从~33s降至~7s（精简prompt），v2.0降至~3-4s（本地预抽取+降低max_tokens），v2.1进一步优化：**意图和情绪改为本地检测（毫秒级），LLM只负责槽位和画像抽取**，max_tokens降至200，目标延迟~2-3s。
+> 为降低分析端点延迟（从~33s降至~7s），设计了精简版提示词，去除冗余的槽位定义和示例，仅保留核心分类规则。v2.0版本采用更大胆的槽位抽取策略，并为每个槽位添加置信度评分。
 
 ```
-只输出JSON，不要其他内容。
+分析用户输入，输出JSON。只输出JSON，不要其他内容。
 
-槽位(大胆推断，置信度0-1)：
-售前:product_category,budget_range,brand_preference,usage_scenario
-订单:order_id,phone
-售后:order_id,issue_type,issue_description
+意图类型：order_query(查订单/物流)、after_sale(退货/退款/投诉)、pre_sale(推荐/购买/价格)、general(账户/优惠券/支付)、chitchat(闲聊/问候)、unknown(无法理解)
 
-画像(大胆推断，置信度0-1，中文值)：
-gender,age_range,marital_status,has_children,shopping_motivation,price_sensitivity,consumption_level
+情绪：neutral(中性)、dissatisfied(不满)、angry(愤怒)
 
-格式:{"profile_slots":{},"profile_confidence":{},"business_slots":{},"business_confidence":{},"reasoning":""}
+槽位抽取（大胆推断，根据上下文合理推测，不要轻易填null。每个槽位给出置信度0.0-1.0）：
+- 售前：product_category, budget_range, brand_preference, usage_scenario
+- 订单：order_id, phone
+- 售后：order_id, issue_type, issue_description
 
-预提取:{pre_extracted}
-上下文:{context}
-用户:{user_input}
-JSON:
+画像抽取（大胆推断，根据上下文合理推测，不要轻易留空。所有值必须用中文。每个槽位给出置信度0.0-1.0）：
+gender(性别：男/女), age_range(年龄段), marital_status(婚姻状况：已婚/未婚/离异), has_children(是否有孩子：是/否), shopping_motivation(购物动机：自用/送礼/家用/工作用), price_sensitivity(价格敏感度：高/中/低), consumption_level(消费等级：高/中/低)
+
+输出格式：
+{"intent":"意图","confidence":0.9,"emotion":"情绪","emotion_confidence":0.9,"profile_slots":{},"profile_confidence":{},"business_slots":{},"business_confidence":{},"reasoning":"简短分析"}
+
+上下文：{context}
+用户输入：{user_input}
+JSON：
 ```
-
-> **性能优化说明（v2.1）**：
-> 1. **本地意图检测**：通过关键词匹配在本地判断意图（order_query/after_sale/pre_sale/chitchat），置信度>=0.8时直接使用，无需LLM推理
-> 2. **本地情绪检测**：通过负面词库匹配判断情绪（angry/dissatisfied/neutral），置信度>=0.8时直接使用
-> 3. **扩展本地预抽取**：除订单号/手机号外，新增商品类别（15类）、品牌（18个）、预算范围（正则）、使用场景（8类）、售后问题类型（6类）、画像槽位（性别/是否有孩子/年龄段）的本地提取
-> 4. **LLM只负责槽位+画像**：prompt中移除意图和情绪指令，LLM只需输出profile_slots和business_slots，推理工作量减少约40%
-> 5. **max_tokens降至200**：JSON响应更精简（无需intent/emotion字段），进一步降低生成时间
 
 ### 5.2 直接回复Prompt（DIRECT_RESPONSE_PROMPT - 快速通道用）
 

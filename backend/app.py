@@ -231,7 +231,6 @@ async def get_panel_data(session_id: str):
             },
             "emotion_status": {
                 "label": current_emotion.get("label", "neutral"),
-                "confidence": current_emotion.get("confidence", 0),
                 "history": emotion_history[-5:],
             },
             "token_consumption": {
@@ -241,12 +240,10 @@ async def get_panel_data(session_id: str):
                 "round_count": len([m for m in messages if m["role"] == "user"]),
             },
             "user_profile": session.get("user_profile", {}),
-            "profile_confidence": session.get("profile_confidence", {}),
             "flow_state": {
                 "current_flow": session.get("current_flow", ""),
                 "current_step": session.get("current_step", ""),
                 "filled_slots": session.get("business_slots", {}),
-                "business_confidence": session.get("business_confidence", {}),
                 "snapshot_stack": session.get("snapshot_stack", []),
             },
         },
@@ -517,8 +514,6 @@ async def analyze_message(request: ChatRequest, req: Request):
 
             profile_updates = result.get("profile_slots", {})
             profile_confidence = result.get("profile_confidence", {})
-            business_slots = result.get("business_slots", {})
-            business_confidence = result.get("business_confidence", {})
             # 将所有英文槽位值统一转换为中文
             profile_updates = translate_profile_slots(profile_updates)
             if profile_updates:
@@ -527,8 +522,7 @@ async def analyze_message(request: ChatRequest, req: Request):
             session_store.update_session(session_id, {
                 "current_intent": {"id": intent_id, "name": intent_name, "confidence": result.get("confidence", 0), "route": route},
                 "current_emotion": {"label": emotion_label, "confidence": result.get("emotion_confidence", 0)},
-                "business_slots": business_slots,
-                "business_confidence": business_confidence,
+                "business_slots": result.get("business_slots", {}),
                 "need_comfort": need_comfort,
                 "need_escalation": need_escalation,
             })
@@ -540,12 +534,7 @@ async def analyze_message(request: ChatRequest, req: Request):
                 "data": {
                     "intent": {"id": intent_id, "name": intent_name, "confidence": result.get("confidence", 0), "route": route},
                     "emotion": {"label": emotion_label, "confidence": result.get("emotion_confidence", 0), "need_comfort": need_comfort, "need_escalation": need_escalation},
-                    "structured_data": {
-                        "profile_updates": profile_updates,
-                        "profile_confidence": profile_confidence,
-                        "business_slots": business_slots,
-                        "business_confidence": business_confidence,
-                    },
+                    "structured_data": {"profile_updates": profile_updates, "business_slots": result.get("business_slots", {})},
                     "token_usage": accumulated_usage,
                 },
                 "msg": "success"
