@@ -215,7 +215,8 @@ class KimiClient:
                     content = content[:-3]
                 parsed = json.loads(content)
                 updates = translate_profile_slots(parsed.get("updates", {}))
-                return {"success": True, "updates": updates, "usage": result["usage"]}
+                confidence = parsed.get("confidence", {})
+                return {"success": True, "updates": updates, "confidence": confidence, "usage": result["usage"]}
             except json.JSONDecodeError:
                 return {"success": True, "updates": {}, "usage": result["usage"]}
         return result
@@ -263,7 +264,9 @@ class KimiClient:
                 "emotion": "neutral",
                 "emotion_confidence": 0.5,
                 "profile_slots": {},
+                "profile_confidence": {},
                 "business_slots": {},
+                "business_confidence": {},
                 "usage": result.get("usage", {})
             }
 
@@ -283,7 +286,9 @@ class KimiClient:
                 "emotion": parsed.get("emotion", "neutral"),
                 "emotion_confidence": parsed.get("emotion_confidence", 0.5),
                 "profile_slots": parsed.get("profile_slots", {}),
+                "profile_confidence": parsed.get("profile_confidence", {}),
                 "business_slots": parsed.get("business_slots", {}),
+                "business_confidence": parsed.get("business_confidence", {}),
                 "reasoning": parsed.get("reasoning", ""),
                 "usage": result.get("usage", {})
             }
@@ -296,7 +301,9 @@ class KimiClient:
                 "emotion": "neutral",
                 "emotion_confidence": 0.5,
                 "profile_slots": {},
+                "profile_confidence": {},
                 "business_slots": {},
+                "business_confidence": {},
                 "usage": result.get("usage", {})
             }
 

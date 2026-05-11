@@ -260,22 +260,29 @@ async def intent_classifier_node(state: AgentState) -> AgentState:
             business_slots[k] = v
 
     profile_slots = result.get("profile_slots", {})
+    profile_confidence = result.get("profile_confidence", {})
     
     # 将所有英文槽位值统一转换为中文
     profile_slots = translate_profile_slots(profile_slots)
     
     if "老公" in user_input:
         profile_slots["gender"] = "女"
+        profile_confidence["gender"] = 0.9
     elif "老婆" in user_input:
         profile_slots["gender"] = "男"
+        profile_confidence["gender"] = 0.9
     elif "男朋友" in user_input:
         profile_slots["gender"] = "女"
+        profile_confidence["gender"] = 0.9
     elif "女朋友" in user_input:
         profile_slots["gender"] = "男"
+        profile_confidence["gender"] = 0.9
     elif "妈妈" in user_input or "母亲" in user_input:
         profile_slots["gender"] = "女"
+        profile_confidence["gender"] = 0.9
     elif "爸爸" in user_input or "父亲" in user_input:
         profile_slots["gender"] = "男"
+        profile_confidence["gender"] = 0.9
     
     emotion_label = result.get("emotion", "neutral")
     emotion_score = {
@@ -284,9 +291,10 @@ async def intent_classifier_node(state: AgentState) -> AgentState:
         "angry": 1
     }.get(emotion_label, 5)
     profile_slots["satisfaction_score"] = emotion_score * 10
+    profile_confidence["satisfaction_score"] = 0.8
 
     if profile_slots:
-        session_store.update_user_profile(session_id, profile_slots)
+        session_store.update_user_profile(session_id, profile_slots, profile_confidence)
 
     return {
         **state,

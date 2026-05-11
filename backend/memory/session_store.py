@@ -20,6 +20,7 @@ class SessionStore:
             "current_step": None,
             "business_slots": {},
             "user_profile": dict(DEFAULT_USER_PROFILE),
+            "profile_confidence": {},
             "token_usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
             "fallback_count": 0,
             "negative_emotion_count": 0,
@@ -66,18 +67,26 @@ class SessionStore:
         for key in ["prompt_tokens", "completion_tokens", "total_tokens"]:
             session["token_usage"][key] = session["token_usage"].get(key, 0) + usage.get(key, 0)
 
-    def update_user_profile(self, session_id: str, profile_updates: dict):
-        """更新用户画像"""
+    def update_user_profile(self, session_id: str, profile_updates: dict, confidence_scores: dict = None):
+        """更新用户画像，按置信度择优：新置信度高于旧置信度时才更新"""
         session = self.get_session(session_id)
+        if confidence_scores is None:
+            confidence_scores = {}
         for key, value in profile_updates.items():
             if value is not None and value != "" and value != []:
-                if key in session["user_profile"]:
+                new_confidence = confidence_scores.get(key, 0.5)
+                old_confidence = session["profile_confidence"].get(key, 0.0)
+                if key not in session["user_profile"] or session["user_profile"][key] is None or session["user_profile"][key] == "" or session["user_profile"][key] == []:
+                    session["user_profile"][key] = value
+                    session["profile_confidence"][key] = new_confidence
+                elif new_confidence > old_confidence:
                     if isinstance(session["user_profile"][key], list) and isinstance(value, list):
                         existing = set(session["user_profile"][key])
                         existing.update(value)
                         session["user_profile"][key] = list(existing)
                     else:
                         session["user_profile"][key] = value
+                    session["profile_confidence"][key] = new_confidence
 
     def push_snapshot(self, session_id: str):
         """保存当前流程快照到栈中"""
