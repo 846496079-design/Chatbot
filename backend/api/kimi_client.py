@@ -198,6 +198,7 @@ class KimiClient:
 
     async def extract_profile(self, conversation: str, existing_profile: dict) -> dict:
         from agent.prompts import PROFILE_EXTRACTION_PROMPT
+        from agent.graph import translate_profile_slots
         prompt = PROFILE_EXTRACTION_PROMPT.format(
             conversation=conversation, existing_profile=json.dumps(existing_profile, ensure_ascii=False)
         )
@@ -213,7 +214,8 @@ class KimiClient:
                 if content.endswith("```"):
                     content = content[:-3]
                 parsed = json.loads(content)
-                return {"success": True, "updates": parsed.get("updates", {}), "usage": result["usage"]}
+                updates = translate_profile_slots(parsed.get("updates", {}))
+                return {"success": True, "updates": updates, "usage": result["usage"]}
             except json.JSONDecodeError:
                 return {"success": True, "updates": {}, "usage": result["usage"]}
         return result

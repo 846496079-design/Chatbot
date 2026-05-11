@@ -160,7 +160,7 @@ function DataPanel({ data }) {
         <div className="user-info-row">
           <div className="user-avatar">U</div>
           <div className="user-details">
-            <span className="user-id">user_123</span>
+            <span className="user-id">用户123</span>
             <span className="user-phone">138****8888</span>
           </div>
           <div className={`member-badge ${getTagClass(profile.membership_level)}`}>

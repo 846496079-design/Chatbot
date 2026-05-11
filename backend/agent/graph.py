@@ -95,6 +95,54 @@ VALUE_TRANSLATION_MAP = {
     "new customer": "新客户", "active customer": "活跃客户",
     "declining customer": "衰退客户", "lost customer": "流失客户",
     "loyal customer": "忠诚客户",
+    # 通用
+    "unknown": "未知", "other": "其他", "not sure": "不确定",
+    "prefer not to say": "不愿透露",
+    # 职业补充
+    "self-employed": "自由职业", "unemployed": "无业", "retired": "退休",
+    "housewife": "家庭主妇", "civil servant": "公务员",
+    "medical": "医疗", "finance": "金融", "education": "教育",
+    "it": "IT", "freelancer": "自由职业者", "business owner": "企业主",
+    "white collar": "白领", "blue collar": "蓝领",
+    # 地域补充
+    "north": "北方", "south": "南方", "east": "东部", "west": "西部",
+    "northeast": "东北", "southwest": "西南", "northwest": "西北", "southeast": "东南",
+    "tier 1": "一线城市", "tier 2": "二线城市", "tier 3": "三线城市",
+    "tier 4": "四线城市", "tier 5": "五线城市",
+    "first-tier": "一线城市", "second-tier": "二线城市", "third-tier": "三线城市",
+    "new tier 1": "新一线城市",
+    # 购买频率
+    "frequently": "频繁", "occasionally": "偶尔", "rarely": "很少",
+    "daily": "每天", "weekly": "每周", "monthly": "每月",
+    # 购物风格
+    "impulsive": "冲动型", "planned": "计划型",
+    "brand loyal": "品牌忠诚", "price driven": "价格驱动", "quality driven": "品质驱动",
+    "early adopter": "早期尝鲜者", "mainstream": "主流用户", "late adopter": "晚期用户",
+    "impulse buyer": "冲动购买者", "researcher": "研究型", "comparison shopper": "比价型",
+    "loyal": "忠诚", "switcher": "摇摆型",
+    "deal seeker": "优惠追求者", "convenience seeker": "便利追求者",
+    "social shopper": "社交购物者", "solo shopper": "独立购物者",
+    # 活跃时段补充
+    "weekday": "工作日", "weekend": "周末",
+    "morning person": "早起型", "night owl": "夜猫子",
+    # 性格特征
+    "patient": "耐心", "impatient": "急躁",
+    "very patient": "非常耐心", "moderate": "适中",
+    "introvert": "内向", "extrovert": "外向",
+    # 宠物补充
+    "cat person": "猫奴", "dog person": "狗奴", "both": "都喜欢", "neither": "都不喜欢",
+    # 消费风格
+    "minimalist": "极简主义", "maximalist": "极繁主义",
+    "trendy": "潮流", "classic": "经典", "vintage": "复古",
+    "budget": "预算型", "mid-range": "中端", "premium": "高端", "luxury": "奢侈",
+    # 决策速度
+    "fast": "快", "slow": "慢",
+    # 渠道补充
+    "mobile-first": "手机优先", "desktop-first": "电脑优先",
+    "omnichannel": "全渠道", "online-only": "纯线上", "offline-only": "纯线下",
+    # 影响来源
+    "influenced by reviews": "受评价影响", "influenced by ads": "受广告影响",
+    "influenced by friends": "受朋友影响",
 }
 
 

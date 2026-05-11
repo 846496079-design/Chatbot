@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
 
-from agent.graph import agent_graph
+from agent.graph import agent_graph, translate_profile_slots
 from agent.state import AgentState
 from memory.session_store import session_store
 from utils.security import rate_limiter, check_injection
@@ -513,6 +513,8 @@ async def analyze_message(request: ChatRequest, req: Request):
             session_store.add_token_usage(session_id, usage)
 
             profile_updates = result.get("profile_slots", {})
+            # 将所有英文槽位值统一转换为中文
+            profile_updates = translate_profile_slots(profile_updates)
             if profile_updates:
                 session_store.update_user_profile(session_id, profile_updates)
 
