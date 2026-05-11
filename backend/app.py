@@ -513,11 +513,10 @@ async def analyze_message(request: ChatRequest, req: Request):
             session_store.add_token_usage(session_id, usage)
 
             profile_updates = result.get("profile_slots", {})
-            profile_confidence = result.get("profile_confidence", {})
             # 将所有英文槽位值统一转换为中文
             profile_updates = translate_profile_slots(profile_updates)
             if profile_updates:
-                session_store.update_user_profile(session_id, profile_updates, profile_confidence)
+                session_store.update_user_profile(session_id, profile_updates)
 
             session_store.update_session(session_id, {
                 "current_intent": {"id": intent_id, "name": intent_name, "confidence": result.get("confidence", 0), "route": route},
