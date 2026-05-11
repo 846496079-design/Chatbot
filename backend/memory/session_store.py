@@ -27,6 +27,8 @@ class SessionStore:
             "need_escalation": False,
             "need_comfort": False,
             "quick_actions": [],
+            "recommended_products": [],
+            "user_interested_in_product": False,
         }
         self._sessions[session_id] = session
         return session

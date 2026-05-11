@@ -395,8 +395,43 @@ async def pre_sale_handler(state: AgentState) -> AgentState:
         products = search_products(keyword=category)[:5]
 
     products_data = products[:5]
+    
+    # 检查用户是否对之前的推荐感兴趣
+    session = session_store.get_session(session_id)
+    previously_recommended = session.get("recommended_products", [])
+    user_interested = session.get("user_interested_in_product", False)
+    
+    # 如果用户没有表现出兴趣，不要重复推荐
+    if previously_recommended and not user_interested:
+        # 检查用户是否在追问商品
+        user_input = ""
+        messages = state.get("messages", [])
+        if messages:
+            for msg in reversed(messages):
+                if hasattr(msg, "content") and msg.type == "human":
+                    user_input = msg.content
+                    break
+        
+        # 如果用户没有追问商品，只简单回应
+        interest_keywords = ["怎么样", "多少钱", "详情", "看看", "推荐", "哪个", "对比", "区别", "好不好", "值得"]
+        is_asking_about_product = any(kw in user_input for kw in interest_keywords)
+        
+        if not is_asking_about_product:
+            reply = "亲还有其他需要帮忙的吗？比如查询订单或者处理售后问题~"
+            session_store.add_message(session_id, "assistant", reply)
+            return {
+                **state,
+                "messages": state["messages"] + [AIMessage(content=reply)],
+                "current_step": "等待用户反馈",
+                "quick_actions": ["查询订单", "处理售后", "咨询其他商品"],
+            }
+    
+    # 记录本次推荐的商品
+    session_store.update_session(session_id, {
+        "recommended_products": [p["name"] for p in products_data]
+    })
+    
     business_data = json.dumps(products_data, ensure_ascii=False, indent=2)
-
     conversation_history = session_store.get_conversation_history(session_id)
     result = await kimi_client.generate_response(
         intent="售前导购",
@@ -667,14 +702,32 @@ async def chitchat_handler(state: AgentState) -> AgentState:
                 user_input = msg.content
                 break
 
+    # 检查用户是否对之前的推荐感兴趣
+    session = session_store.get_session(session_id)
+    previously_recommended = session.get("recommended_products", [])
+    user_interested = session.get("user_interested_in_product", False)
+    
     # 尝试场景化商品推荐
     scene_products = []
     if user_input:
         scene_products = recommend_by_scene(user_input, max_results=3)
 
+    # 如果之前有推荐但用户没兴趣，且用户没有追问，就不重复推荐
+    if previously_recommended and not user_interested and scene_products:
+        interest_keywords = ["怎么样", "多少钱", "详情", "看看", "推荐", "哪个", "对比", "区别", "好不好", "值得", "怎么", "介绍"]
+        is_asking_about_product = any(kw in user_input for kw in interest_keywords)
+        
+        if not is_asking_about_product:
+            # 用户没有追问，只闲聊回应
+            scene_products = []
+
     if scene_products:
         products_data = json.dumps(scene_products, ensure_ascii=False, indent=2)
         business_data = f"用户闲聊中透露出购买需求，推荐相关商品：\n{products_data}"
+        # 记录本次推荐的商品
+        session_store.update_session(session_id, {
+            "recommended_products": [p["name"] for p in scene_products]
+        })
     else:
         business_data = "用户在进行闲聊，需要友好回应并引导至服务场景"
 
