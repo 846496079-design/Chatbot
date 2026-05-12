@@ -14,6 +14,8 @@ from utils.security import rate_limiter, check_injection
 from langchain_core.messages import HumanMessage
 from api.kimi_client import kimi_client
 from config import SERVER_HOST, SERVER_PORT
+from data.mock_products import search_products
+from data.mock_orders import get_order_by_id
 
 app = FastAPI(title="电商智能客服Agent", version="1.0.0")
 
@@ -24,6 +26,28 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 违规关键词列表
+FORBIDDEN_KEYWORDS = [
+    "去淘宝", "去京东", "去天猫", "去其他平台", "去官网", 
+    "自己去买", "自己下单", "自己操作", "自己去", "自己弄", "自己搞",
+    "到淘宝", "到京东", "到天猫", "到其他平台", "到官网",
+    "去买", "自己买", "自己付", "自己支付", "自己付款"
+]
+
+# 下单关键词
+ORDER_KEYWORDS = ["下单", "买", "购买", "就要", "这个吧", "确定要", "好的，买", "行，买", "就它了", "现在就可以，怎么下单", "帮我下单", "我要下单"]
+
+# 退订/取消关键词
+CANCEL_KEYWORDS = ["退订", "取消订单", "不要了", "退款", "退货", "取消", "我要退", "帮我退", "申请退款"]
+
+def filter_forbidden_content(reply: str) -> str:
+    """拦截并替换违规内容"""
+    for keyword in FORBIDDEN_KEYWORDS:
+        if keyword in reply:
+            # 如果发现违规内容，直接替换为标准回复
+            return "好的，我这就帮您操作😊"
+    return reply
 
 
 class ChatRequest(BaseModel):
@@ -407,6 +431,76 @@ async def send_message_quick(request: ChatRequest, req: Request):
 
     session_store.add_message(session_id, "user", message)
     
+    # 先检查用户是否要求下单
+    is_ordering = any(kw in message for kw in ORDER_KEYWORDS)
+    if is_ordering:
+        # 从会话历史中查找是否有推荐过的商品
+        session = session_store.get_session(session_id)
+        recommended_products = session.get("recommended_products", [])
+        if recommended_products:
+            # 查找对应的商品数据
+            products = search_products(keyword=recommended_products[0])
+            if products:
+                pending_action = {
+                    "type": "order",
+                    "product": products[0]
+                }
+                session_store.update_session(session_id, {"pending_action": pending_action})
+                reply = f"好的，我这就帮您操作😊 确认一下：您要购买{products[0]['name']}，金额{products[0]['price']}元，对吗？"
+                session_store.add_message(session_id, "assistant", reply)
+                return JSONResponse(content={
+                    "code": 0,
+                    "data": {
+                        "reply": reply,
+                        "intent": {"id": "INT-PRE_SALE", "name": "售前", "confidence": 0.9, "route": "pre_sale_flow"},
+                        "emotion": {"label": "neutral", "confidence": 0.8, "need_comfort": False, "need_escalation": False},
+                        "structured_data": {"profile_updates": {}, "business_slots": {}},
+                        "token_usage": {},
+                        "quick_actions": ["确认下单", "再考虑一下"],
+                        "pending_action": pending_action
+                    },
+                    "msg": "success"
+                })
+    
+    # 检查用户是否要求退订/取消
+    is_canceling = any(kw in message for kw in CANCEL_KEYWORDS)
+    if is_canceling:
+        # 查找是否有订单号
+        session = session_store.get_session(session_id)
+        messages = session.get("messages", [])
+        # 从历史消息中查找订单号
+        order_id = None
+        for msg in reversed(messages):
+            if msg["role"] in ["user", "assistant"]:
+                import re
+                match = re.search(r'ORD-\d{8}-\d{3,4}', msg["content"])
+                if match:
+                    order_id = match.group(0)
+                    break
+        if order_id:
+            order = get_order_by_id(order_id)
+            if order:
+                pending_action = {
+                    "type": "cancel",
+                    "order": order
+                }
+                session_store.update_session(session_id, {"pending_action": pending_action})
+                reply = f"好的，我这就帮您操作😊 确认一下：您要取消订单{order_id}，商品{order['product_name']}，退款金额{order['amount']}元，对吗？"
+                session_store.add_message(session_id, "assistant", reply)
+                return JSONResponse(content={
+                    "code": 0,
+                    "data": {
+                        "reply": reply,
+                        "intent": {"id": "INT-AFTER_SALE", "name": "售后", "confidence": 0.9, "route": "after_sale_flow"},
+                        "emotion": {"label": "neutral", "confidence": 0.8, "need_comfort": False, "need_escalation": False},
+                        "structured_data": {"profile_updates": {}, "business_slots": {}},
+                        "token_usage": {},
+                        "quick_actions": ["确认取消", "再考虑一下"],
+                        "pending_action": pending_action
+                    },
+                    "msg": "success"
+                })
+    
     # 使用快速意图检测（模式匹配）
     intent = kimi_client.quick_intent_detect(message)
     
@@ -417,6 +511,8 @@ async def send_message_quick(request: ChatRequest, req: Request):
         
         if result.get("success"):
             reply = result["reply"]
+            # 拦截违规内容
+            reply = filter_forbidden_content(reply)
             session_store.add_message(session_id, "assistant", reply)
             return JSONResponse(content={
                 "code": 0,

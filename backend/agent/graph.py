@@ -14,6 +14,22 @@ from utils.security import check_injection, mask_phone
 from config import MAX_FALLBACK_ROUNDS, MAX_EMOTION_NEGATIVE_ROUNDS
 
 
+# 违规关键词列表
+FORBIDDEN_KEYWORDS = [
+    "去淘宝", "去京东", "去天猫", "去其他平台", "去官网", 
+    "自己去买", "自己下单", "自己操作", "自己去", "自己弄", "自己搞",
+    "到淘宝", "到京东", "到天猫", "到其他平台", "到官网",
+    "去买", "自己买", "自己付", "自己支付", "自己付款"
+]
+
+def filter_forbidden_content(reply: str) -> str:
+    """拦截并替换违规内容"""
+    for keyword in FORBIDDEN_KEYWORDS:
+        if keyword in reply:
+            # 如果发现违规内容，直接替换为标准回复
+            return "好的，我这就帮您操作😊"
+    return reply
+
 # 英文值到中文的转换映射表
 VALUE_TRANSLATION_MAP = {
     # 性别
@@ -368,6 +384,8 @@ async def pre_sale_handler(state: AgentState) -> AgentState:
         else:
             reply = f"为了更好地为您推荐，能告诉我您想了解哪类商品吗？比如数码、服装、家居还是美妆呢？"
 
+        # 拦截违规内容
+        reply = filter_forbidden_content(reply)
         session_store.add_message(session_id, "assistant", reply)
         return {
             **state,
@@ -481,6 +499,8 @@ async def pre_sale_handler(state: AgentState) -> AgentState:
         names = [p["name"] for p in products_data[:3]]
         reply = f"根据您的需求，为您推荐：{'、'.join(names)}。请问有感兴趣的吗？"
 
+    # 拦截违规内容
+    reply = filter_forbidden_content(reply)
     session_store.add_message(session_id, "assistant", reply)
     return {
         **state,
@@ -518,6 +538,8 @@ async def order_query_handler(state: AgentState) -> AgentState:
         else:
             reply = "请提供您的订单号，或者收货手机号后4位，我帮您查询哈。"
 
+        # 拦截违规内容
+        reply = filter_forbidden_content(reply)
         session_store.add_message(session_id, "assistant", reply)
         return {
             **state,
@@ -566,6 +588,8 @@ async def order_query_handler(state: AgentState) -> AgentState:
             logistics_info = f"，物流状态：{order['logistics']['current']}"
         reply = f"您的订单{order['order_id']}：{order['product_name']}，金额{order['amount']}元，状态：{order['status']}{logistics_info}。还需要其他帮助吗？"
 
+    # 拦截违规内容
+    reply = filter_forbidden_content(reply)
     session_store.add_message(session_id, "assistant", reply)
 
     # 构建返回卡片数据
@@ -612,6 +636,8 @@ async def after_sale_handler(state: AgentState) -> AgentState:
         else:
             reply = "请提供需要处理的订单号，我来帮您处理售后问题。"
 
+        # 拦截违规内容
+        reply = filter_forbidden_content(reply)
         session_store.add_message(session_id, "assistant", reply)
         return {
             **state,
@@ -638,6 +664,8 @@ async def after_sale_handler(state: AgentState) -> AgentState:
         else:
             reply = "请问您遇到了什么问题呢？是想要退货、换货，还是商品有质量问题？"
 
+        # 拦截违规内容
+        reply = filter_forbidden_content(reply)
         session_store.add_message(session_id, "assistant", reply)
         return {
             **state,
@@ -711,6 +739,8 @@ async def after_sale_handler(state: AgentState) -> AgentState:
     else:
         reply = f"已为您创建售后工单（{ticket['ticket_id']}），处理{issue_type or '您的问题'}。预计{ticket['estimated_time']}内回复，请留意通知哦。"
 
+    # 拦截违规内容
+    reply = filter_forbidden_content(reply)
     session_store.add_message(session_id, "assistant", reply)
     return {
         **state,
@@ -740,6 +770,8 @@ async def general_handler(state: AgentState) -> AgentState:
     else:
         reply = "亲，啥情况？跟我说说哈"
 
+    # 拦截违规内容
+    reply = filter_forbidden_content(reply)
     session_store.add_message(session_id, "assistant", reply)
     return {
         **state,
@@ -812,6 +844,8 @@ async def chitchat_handler(state: AgentState) -> AgentState:
         else:
             reply = "您好呀！我是小慧，可以帮您推荐商品、查询订单、处理售后，有什么需要吗？"
 
+    # 拦截违规内容
+    reply = filter_forbidden_content(reply)
     session_store.add_message(session_id, "assistant", reply)
     return {
         **state,
@@ -857,6 +891,8 @@ async def fallback_handler(state: AgentState) -> AgentState:
     else:
         reply = "亲，我没太懂~ 你是想：1.买东西 2.查订单 3.售后问题？"
 
+    # 拦截违规内容
+    reply = filter_forbidden_content(reply)
     session_store.add_message(session_id, "assistant", reply)
     return {
         **state,
