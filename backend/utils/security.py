@@ -1,12 +1,13 @@
 import re
 import time
 from collections import defaultdict
+from config import RATE_LIMIT_PER_MINUTE
 
 
 class RateLimiter:
     """API调用频次限制器"""
 
-    def __init__(self, max_calls_per_minute: int = 10):
+    def __init__(self, max_calls_per_minute: int = RATE_LIMIT_PER_MINUTE):
         self.max_calls = max_calls_per_minute
         self.session_records: dict = defaultdict(list)
         self.ip_records: dict = defaultdict(list)
