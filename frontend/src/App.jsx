@@ -26,6 +26,29 @@ function App() {
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [showDataPanel, setShowDataPanel] = useState(false);
   const chatEndRef = useRef(null);
+  const touchStartY = useRef(0);
+  const touchEndY = useRef(0);
+
+  // 上滑唤出看板
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartY.current - touchEndY.current;
+    // 上滑超过80px且看板未显示时，唤出看板
+    if (diff > 80 && !showDataPanel) {
+      setShowDataPanel(true);
+    }
+    // 下滑超过80px且看板显示时，关闭看板
+    if (diff < -80 && showDataPanel) {
+      setShowDataPanel(false);
+    }
+  };
 
   useEffect(() => {
     createSession();
@@ -303,7 +326,7 @@ function App() {
         </div>
       </div>
 
-      <div className="app-body">
+      <div className="app-body" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
         <div className="chat-panel">
           {showGuide && messages.length === 0 ? (
             <WelcomeGuide onAction={handleQuickAction} />
@@ -325,16 +348,15 @@ function App() {
           </div>
           <DataPanel data={panelData} />
         </div>
+        
+        {/* 移动端下滑查看看板引导 */}
+        {!showDataPanel && (
+          <div className="swipe-guide">
+            <span className="swipe-guide-arrow">\u2191</span>
+            <span className="swipe-guide-text">上滑查看B端看板</span>
+          </div>
+        )}
       </div>
-
-      {/* 移动端数据面板切换按钮 */}
-      <button 
-        className="data-panel-toggle" 
-        onClick={() => setShowDataPanel(!showDataPanel)}
-      >
-        <span className="data-panel-toggle-icon">{showDataPanel ? '\u2715' : '\ud83d\udcca'}</span>
-        {showDataPanel ? '收起看板' : 'B端看板'}
-      </button>
 
       {/* 确认弹窗 */}
       {confirmDialog && (
