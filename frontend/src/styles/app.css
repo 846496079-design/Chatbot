@@ -1546,21 +1546,20 @@ body {
   
   /* 数据面板默认隐藏，通过按钮切换显示 */
   .data-panel {
+    display: none;
+  }
+  
+  .data-panel.show {
+    display: block;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     height: 50vh;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
     z-index: 100;
     background: #fafafa;
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
-  }
-  
-  .data-panel.show {
-    transform: translateY(0);
   }
   
   .data-panel-header {
