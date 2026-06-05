@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CardContainer } from './ChatCards';
 
-function ChatWindow({ messages, loading, quickActions, onAction, onSend, chatEndRef }) {
+function ChatWindow({ messages, loading, quickActions, onAction, onSend, chatEndRef, onInputFocus, onInputBlur }) {
   const [input, setInput] = useState('');
 
   const handleSubmit = (e) => {
@@ -71,6 +71,8 @@ function ChatWindow({ messages, loading, quickActions, onAction, onSend, chatEnd
           placeholder="请输入您的问题..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onFocus={onInputFocus}
+          onBlur={onInputBlur}
           disabled={loading}
         />
         <button type="submit" className="send-btn" disabled={loading || !input.trim()}>

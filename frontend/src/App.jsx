@@ -25,6 +25,7 @@ function App() {
   const [sceneLabel, setSceneLabel] = useState('');
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [showDataPanel, setShowDataPanel] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const chatEndRef = useRef(null);
   const touchStartY = useRef(0);
   const touchEndY = useRef(0);
@@ -39,6 +40,9 @@ function App() {
   };
 
   const handleTouchEnd = () => {
+    // 输入框聚焦时不触发看板
+    if (isInputFocused) return;
+    
     const diff = touchStartY.current - touchEndY.current;
     // 上滑超过80px且看板未显示时，唤出看板
     if (diff > 80 && !showDataPanel) {
@@ -338,6 +342,8 @@ function App() {
               onAction={handleQuickAction}
               onSend={sendMessage}
               chatEndRef={chatEndRef}
+              onInputFocus={() => setIsInputFocused(true)}
+              onInputBlur={() => setIsInputFocused(false)}
             />
           )}
         </div>
@@ -352,7 +358,6 @@ function App() {
         {/* 移动端下滑查看看板引导 */}
         {!showDataPanel && (
           <div className="swipe-guide">
-            <span className="swipe-guide-arrow">\u2191</span>
             <span className="swipe-guide-text">上滑查看B端看板</span>
           </div>
         )}
