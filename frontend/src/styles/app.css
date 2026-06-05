@@ -1907,7 +1907,6 @@ body {
   z-index: 99;
   font-size: 12px;
   font-weight: 500;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
