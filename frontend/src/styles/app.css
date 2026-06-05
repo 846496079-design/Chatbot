@@ -1893,15 +1893,19 @@ body {
 
 /* 数据面板切换按钮 (仅移动端显示) */
 .data-panel-toggle {
-  display: none;
+  display: none !important;
   position: fixed;
   top: 60px;
   left: 12px;
+  width: auto;
+  min-width: auto;
+  max-width: none;
+  height: auto;
   padding: 6px 12px;
   border-radius: 16px;
-  background: #fff;
-  color: #e4393c;
-  border: 1px solid #e4393c;
+  background: #fff !important;
+  color: #e4393c !important;
+  border: 1px solid #e4393c !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   z-index: 99;
@@ -1926,7 +1930,7 @@ body {
 
 @media screen and (max-width: 480px) {
   .data-panel-toggle {
-    display: flex;
+    display: flex !important;
   }
 }
 
