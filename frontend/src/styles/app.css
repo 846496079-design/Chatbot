@@ -1236,3 +1236,702 @@ body {
 .confirm-dialog-btn.confirm-btn:hover {
   background: #c62828;
 }
+
+/* ===== 移动端适配 ===== */
+
+/* 平板设备 (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+  .data-panel {
+    width: 320px;
+  }
+  
+  .scene-card {
+    min-width: 200px;
+  }
+}
+
+/* 移动设备 (小于768px) */
+@media screen and (max-width: 768px) {
+  /* 整体布局 */
+  .app-header {
+    padding: 0 12px;
+    height: 44px;
+  }
+  
+  .header-left {
+    gap: 8px;
+  }
+  
+  .header-back {
+    font-size: 13px;
+  }
+  
+  .header-scene {
+    font-size: 12px;
+  }
+  
+  .header-center {
+    display: none;
+  }
+  
+  .btn-reset {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+  
+  /* 双栏变单栏 */
+  .app-body {
+    flex-direction: column;
+  }
+  
+  .chat-panel {
+    flex: 1;
+  }
+  
+  .data-panel {
+    width: 100%;
+    max-height: 40vh;
+    border-left: none;
+    border-top: 1px solid #e8e8e8;
+    order: 2;
+  }
+  
+  .data-panel-header {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  /* 欢迎页面 */
+  .welcome-content {
+    padding: 16px 12px;
+  }
+  
+  .welcome-avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  
+  .welcome-hero h2 {
+    font-size: 20px;
+  }
+  
+  .welcome-subtitle {
+    font-size: 13px;
+  }
+  
+  .scene-cards {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .scene-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: unset;
+    padding: 16px;
+  }
+  
+  .scene-icon {
+    font-size: 24px;
+  }
+  
+  .scene-card-header h3 {
+    font-size: 14px;
+  }
+  
+  .scene-action-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  
+  .welcome-input-form {
+    padding: 8px 12px;
+  }
+  
+  .welcome-input {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+  
+  .welcome-submit-btn {
+    padding: 7px 18px;
+    font-size: 13px;
+  }
+  
+  /* 聊天窗口 */
+  .chat-messages {
+    padding: 12px;
+  }
+  
+  .message {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .message-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+  
+  .message-bubble {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .message-content-wrapper {
+    max-width: 80%;
+  }
+  
+  .quick-actions-bar {
+    padding: 6px 12px;
+    gap: 6px;
+  }
+  
+  .quick-action-btn {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+  
+  .chat-input-area {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  
+  .chat-input {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+  
+  .send-btn {
+    padding: 7px 16px;
+    font-size: 13px;
+  }
+  
+  /* 卡片 */
+  .card-container {
+    gap: 8px;
+  }
+  
+  .card {
+    width: 180px;
+  }
+  
+  .product-card .card-image {
+    height: 100px;
+  }
+  
+  .card-body {
+    padding: 8px 10px;
+  }
+  
+  .card-title {
+    font-size: 12px;
+  }
+  
+  .card-price {
+    font-size: 14px;
+  }
+  
+  /* 数据面板 */
+  .data-panel-content {
+    padding: 4px;
+  }
+  
+  .intent-emotion-row {
+    flex-direction: row;
+  }
+  
+  .intent-section, .emotion-section {
+    padding: 6px;
+  }
+  
+  .intent-name {
+    font-size: 12px;
+  }
+  
+  .emotion-score {
+    font-size: 16px;
+  }
+  
+  .token-section {
+    gap: 4px;
+  }
+  
+  .token-item {
+    padding: 4px 6px;
+  }
+  
+  .token-label {
+    font-size: 8px;
+  }
+  
+  .token-value {
+    font-size: 12px;
+  }
+  
+  .profile-section {
+    padding: 6px;
+  }
+  
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3px;
+  }
+  
+  .profile-item {
+    padding: 3px 4px;
+    font-size: 9px;
+  }
+  
+  /* 确认弹窗 */
+  .confirm-dialog {
+    width: 95%;
+    max-width: 320px;
+  }
+  
+  .confirm-dialog-header {
+    padding: 12px 16px;
+  }
+  
+  .confirm-dialog-title {
+    font-size: 15px;
+  }
+  
+  .confirm-dialog-body {
+    padding: 16px;
+  }
+  
+  .confirm-dialog-body p {
+    font-size: 13px;
+  }
+  
+  .confirm-dialog-footer {
+    padding: 10px 16px;
+    gap: 8px;
+  }
+  
+  .confirm-dialog-btn {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
+}
+
+/* 小屏手机 (小于480px) */
+@media screen and (max-width: 480px) {
+  .app-header {
+    padding: 0 10px;
+    height: 40px;
+  }
+  
+  .header-left {
+    gap: 6px;
+  }
+  
+  .header-back {
+    font-size: 12px;
+  }
+  
+  .header-scene {
+    font-size: 11px;
+  }
+  
+  .btn-reset {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+  
+  /* 数据面板默认隐藏，通过按钮切换显示 */
+  .data-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50vh;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 100;
+    background: #fafafa;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .data-panel.show {
+    transform: translateY(0);
+  }
+  
+  .data-panel-header {
+    border-radius: 16px 16px 0 0;
+    position: relative;
+  }
+  
+  .data-panel-header::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    background: #d9d9d9;
+    border-radius: 2px;
+  }
+  
+  /* 欢迎页面 */
+  .welcome-content {
+    padding: 12px 10px;
+  }
+  
+  .welcome-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .welcome-hero h2 {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  
+  .welcome-subtitle {
+    font-size: 12px;
+  }
+  
+  .scene-card {
+    padding: 12px;
+  }
+  
+  .scene-card-header {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .scene-icon {
+    font-size: 22px;
+  }
+  
+  .scene-card-header h3 {
+    font-size: 13px;
+  }
+  
+  .scene-card-header p {
+    font-size: 11px;
+  }
+  
+  .scene-actions {
+    gap: 6px;
+  }
+  
+  .scene-action-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  
+  .welcome-footer {
+    margin-top: 12px;
+  }
+  
+  .welcome-footer p {
+    font-size: 12px;
+  }
+  
+  .welcome-input-form {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+  
+  .welcome-input {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .welcome-submit-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+  
+  /* 聊天窗口 */
+  .chat-messages {
+    padding: 10px;
+  }
+  
+  .message {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .message-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 9px;
+  }
+  
+  .message-bubble {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  
+  .message-content-wrapper {
+    max-width: 75%;
+  }
+  
+  .quick-actions-bar {
+    padding: 5px 10px;
+    gap: 5px;
+  }
+  
+  .quick-action-btn {
+    padding: 3px 8px;
+    font-size: 10px;
+    border-radius: 12px;
+  }
+  
+  .chat-input-area {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  
+  .chat-input {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 16px;
+  }
+  
+  .send-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 16px;
+  }
+  
+  /* 卡片 */
+  .card-container {
+    gap: 6px;
+    margin-top: 6px;
+  }
+  
+  .card {
+    width: 160px;
+    border-radius: 8px;
+  }
+  
+  .product-card .card-image {
+    height: 80px;
+  }
+  
+  .card-discount-badge {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+  
+  .card-body {
+    padding: 6px 8px;
+  }
+  
+  .card-title {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  
+  .card-meta {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+  
+  .card-price-row {
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  
+  .card-price {
+    font-size: 13px;
+  }
+  
+  .card-original-price {
+    font-size: 10px;
+  }
+  
+  .card-tags {
+    gap: 3px;
+  }
+  
+  .card-tag {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+  
+  /* 订单卡片 */
+  .order-card .card-header {
+    padding: 6px 8px;
+  }
+  
+  .card-order-id {
+    font-size: 10px;
+  }
+  
+  .card-status {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+  
+  .card-info {
+    gap: 3px;
+  }
+  
+  .card-info-item {
+    font-size: 10px;
+  }
+  
+  .card-payment {
+    font-size: 10px;
+    padding-top: 4px;
+  }
+  
+  /* 物流卡片 */
+  .logistics-card .card-header {
+    padding: 6px 8px;
+  }
+  
+  .card-logistics-title {
+    font-size: 11px;
+  }
+  
+  .card-tracking-no {
+    font-size: 10px;
+  }
+  
+  .logistics-carrier {
+    margin-bottom: 6px;
+  }
+  
+  .carrier-name {
+    font-size: 11px;
+  }
+  
+  .estimated-delivery {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+  
+  .logistics-current {
+    padding: 6px;
+    margin-bottom: 6px;
+  }
+  
+  .current-dot {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .current-text {
+    font-size: 11px;
+  }
+  
+  .logistics-timeline {
+    gap: 6px;
+  }
+  
+  .timeline-item {
+    gap: 6px;
+  }
+  
+  .timeline-dot {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .timeline-status {
+    font-size: 10px;
+  }
+  
+  .timeline-detail {
+    font-size: 10px;
+  }
+  
+  .timeline-time {
+    font-size: 9px;
+  }
+  
+  /* 确认弹窗 */
+  .confirm-dialog {
+    width: 96%;
+    max-width: 280px;
+    border-radius: 6px;
+  }
+  
+  .confirm-dialog-header {
+    padding: 10px 12px;
+  }
+  
+  .confirm-dialog-title {
+    font-size: 14px;
+  }
+  
+  .confirm-dialog-body {
+    padding: 12px;
+  }
+  
+  .confirm-dialog-body p {
+    font-size: 12px;
+  }
+  
+  .confirm-dialog-footer {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  
+  .confirm-dialog-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 3px;
+  }
+}
+
+/* 数据面板切换按钮 (仅移动端显示) */
+.data-panel-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e4393c;
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(228, 57, 60, 0.4);
+  cursor: pointer;
+  z-index: 99;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 480px) {
+  .data-panel-toggle {
+    display: flex;
+  }
+}
+
+/* 安全区域适配 (iPhone X 等刘海屏) */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .chat-input-area {
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+  
+  .welcome-input-form {
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+  
+  .data-panel {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .data-panel-toggle {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+}

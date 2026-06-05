@@ -24,6 +24,7 @@ function App() {
   const [showGuide, setShowGuide] = useState(true);
   const [sceneLabel, setSceneLabel] = useState('');
   const [confirmDialog, setConfirmDialog] = useState(null);
+  const [showDataPanel, setShowDataPanel] = useState(false);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -318,13 +319,21 @@ function App() {
           )}
         </div>
 
-        <div className="data-panel">
-          <div className="data-panel-header">
+        <div className={`data-panel ${showDataPanel ? 'show' : ''}`}>
+          <div className="data-panel-header" onClick={() => setShowDataPanel(false)}>
             B端数据看板<span className="internal-tag">仅内部可见</span>
           </div>
           <DataPanel data={panelData} />
         </div>
       </div>
+
+      {/* 移动端数据面板切换按钮 */}
+      <button 
+        className="data-panel-toggle" 
+        onClick={() => setShowDataPanel(!showDataPanel)}
+      >
+        {showDataPanel ? '\u2715' : '\u2630'}
+      </button>
 
       {/* 确认弹窗 */}
       {confirmDialog && (
