@@ -25,34 +25,7 @@ function App() {
   const [sceneLabel, setSceneLabel] = useState('');
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [showDataPanel, setShowDataPanel] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
   const chatEndRef = useRef(null);
-  const touchStartY = useRef(0);
-  const touchEndY = useRef(0);
-
-  // 上滑唤出看板
-  const handleTouchStart = (e) => {
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchMove = (e) => {
-    touchEndY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = () => {
-    // 输入框聚焦时不触发看板
-    if (isInputFocused) return;
-    
-    const diff = touchStartY.current - touchEndY.current;
-    // 上滑超过80px且看板未显示时，唤出看板
-    if (diff > 80 && !showDataPanel) {
-      setShowDataPanel(true);
-    }
-    // 下滑超过80px且看板显示时，关闭看板
-    if (diff < -80 && showDataPanel) {
-      setShowDataPanel(false);
-    }
-  };
 
   useEffect(() => {
     createSession();
@@ -330,7 +303,7 @@ function App() {
         </div>
       </div>
 
-      <div className="app-body" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+      <div className="app-body">
         <div className="chat-panel">
           {showGuide && messages.length === 0 ? (
             <WelcomeGuide onAction={handleQuickAction} />
@@ -342,8 +315,6 @@ function App() {
               onAction={handleQuickAction}
               onSend={sendMessage}
               chatEndRef={chatEndRef}
-              onInputFocus={() => setIsInputFocused(true)}
-              onInputBlur={() => setIsInputFocused(false)}
             />
           )}
         </div>
@@ -355,11 +326,14 @@ function App() {
           <DataPanel data={panelData} />
         </div>
         
-        {/* 移动端下滑查看看板引导 */}
+        {/* 移动端数据面板切换按钮 */}
         {!showDataPanel && (
-          <div className="swipe-guide">
-            <span className="swipe-guide-text">上滑查看B端看板</span>
-          </div>
+          <button 
+            className="data-panel-toggle" 
+            onClick={() => setShowDataPanel(true)}
+          >
+            B端看板
+          </button>
         )}
       </div>
 
