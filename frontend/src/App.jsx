@@ -332,7 +332,8 @@ function App() {
         className="data-panel-toggle" 
         onClick={() => setShowDataPanel(!showDataPanel)}
       >
-        {showDataPanel ? '\u2715' : '\u2630'}
+        <span className="data-panel-toggle-icon">{showDataPanel ? '\u2715' : '\ud83d\udcca'}</span>
+        {showDataPanel ? '收起看板' : 'B端看板'}
       </button>
 
       {/* 确认弹窗 */}
