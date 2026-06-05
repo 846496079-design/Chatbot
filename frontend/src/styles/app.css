@@ -1897,35 +1897,40 @@ body {
   position: fixed;
   top: 60px;
   left: 12px;
-  width: auto;
-  min-width: auto;
-  max-width: none;
-  height: auto;
-  padding: 6px 12px;
-  border-radius: 16px;
+  width: auto !important;
+  min-width: 80px !important;
+  max-width: 150px !important;
+  height: auto !important;
+  padding: 6px 12px !important;
+  border-radius: 16px !important;
   background: #fff !important;
   color: #e4393c !important;
   border: 1px solid #e4393c !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  z-index: 99;
-  font-size: 12px;
-  font-weight: 500;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  transition: all 0.2s;
-  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  cursor: pointer !important;
+  z-index: 99 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  transition: all 0.2s !important;
+  white-space: nowrap !important;
+  line-height: 1.4 !important;
+  box-sizing: border-box !important;
 }
 
 .data-panel-toggle:hover,
 .data-panel-toggle:active {
-  background: #e4393c;
-  color: #fff;
+  background: #e4393c !important;
+  color: #fff !important;
+  border-color: #e4393c !important;
 }
 
 .data-panel-toggle-icon {
-  font-size: 14px;
+  font-size: 14px !important;
+  display: inline-block !important;
 }
 
 @media screen and (max-width: 480px) {
