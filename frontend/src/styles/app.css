@@ -1894,48 +1894,43 @@ body {
 /* 数据面板切换按钮 (仅移动端显示) */
 .data-panel-toggle {
   display: none !important;
-  position: fixed;
-  top: 60px;
-  left: 12px;
-  width: auto !important;
-  min-width: 80px !important;
-  max-width: 150px !important;
-  height: auto !important;
-  padding: 6px 12px !important;
-  border-radius: 16px !important;
-  background: #fff !important;
-  color: #e4393c !important;
-  border: 1px solid #e4393c !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  cursor: pointer !important;
-  z-index: 99 !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 4px !important;
-  transition: all 0.2s !important;
-  white-space: nowrap !important;
-  line-height: 1.4 !important;
-  box-sizing: border-box !important;
-}
-
-.data-panel-toggle:hover,
-.data-panel-toggle:active {
-  background: #e4393c !important;
-  color: #fff !important;
-  border-color: #e4393c !important;
-}
-
-.data-panel-toggle-icon {
-  font-size: 14px !important;
-  display: inline-block !important;
 }
 
 @media screen and (max-width: 480px) {
   .data-panel-toggle {
-    display: flex !important;
+    display: block !important;
+    position: fixed !important;
+    top: 60px !important;
+    left: 12px !important;
+    width: auto !important;
+    padding: 8px 14px !important;
+    border-radius: 20px !important;
+    background: #fff !important;
+    color: #e4393c !important;
+    border: 1.5px solid #e4393c !important;
+    box-shadow: 0 2px 12px rgba(228, 57, 60, 0.25) !important;
+    cursor: pointer !important;
+    z-index: 9999 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+  
+  .data-panel-toggle:hover {
+    background: #e4393c !important;
+    color: #fff !important;
+  }
+  
+  .data-panel-toggle:active {
+    background: #c62828 !important;
+    color: #fff !important;
+    transform: scale(0.98) !important;
+  }
+  
+  .data-panel-toggle-icon {
+    margin-right: 4px !important;
   }
 }
 
